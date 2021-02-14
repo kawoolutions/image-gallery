@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templating/template.xhtml">
+    
+    <ui:define name="metadata">
+        <f:metadata>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="title">
+        <h:outputText value="Image Gallery" />
+    </ui:define>
+
+    <ui:define name="content">
+        
+        <h:form id="main-form" prependId="false">
+            
+            <p:dataView id="thumbnail-image-data-view"
+                        widgetVar="thumbnailImageDataView"
+                        value="#{thumbnailImageManager.entities}"
+                        var="tim"
+                        rowIndexVar="index"
+                        layout="grid"
+                        paginator="true"
+                        paginatorAlwaysVisible="false">
+
+                <p:dataViewGridItem>
+                    <p:commandLink id="thumbnail-image-link"
+                                   widgetVar="thumbnailLink"
+                                  ction="#{thumbnailImageManager.loadGalleryImage}"
+                                   process="@this"
+                                   update="gallery-image-dialog msgs"
+                                   onstart="PF('statusDialog').show();"
+                                   oncomplete="if (#{empty tim.id}) {return false;} PF('galleryImageDialog').initSize(); PF('galleryImageDialog').initPosition(); PF('galleryImageDialog').show(); PF('statusDialog').hide();"
+                                   styleClass="display-inline-block full-width">
+                        
+                        <f:setPropertyActionListener target="#{thumbnailImageManager.selectedEntity}" value="#{tim}" />
+                        
+                        ID: #{tim.id}<br />
+                        CLASS: #{tim.class.simpleName}<br />
+                        FILE: #{tim.fileName}<br />
+                        DATA SIZE: #{fn:length(tim.data)}<br />
+                        NOT EMP AID?: #{not empty tim.id}<br />
+                        FACTOR: #{tim.aspectRatio}<br />
+                        <p:graphicImage id="thumbnail-image"
+                                        value="#{thumbnailImageStreamer.thumbnailImageStream}"
+                                        alt="#{tim.alternativeText}"
+                                        stream="true"
+                                        cache="false"
+                                        styleClass="">
+                            <f:param name="thumbnailImageId" value="#{tim.id}" />
+                        </p:graphicImage>
+                        <p:tooltip for="thumbnail-image-link" value="Yo show da big image!" />
+                    
+                    </p:commandLink>
+                    
+                    <p:outputPanel id="remarks-panel">
+                        <h:outputText value="#{tim.remarks}"
+                                      styleClass="" />
+                    </p:outputPanel>
+
+                    <p:outputPanel id="alternative-text-panel">
+                        <h:outputText value="#{tim.alternativeText}"
+                                      styleClass="" />
+                    </p:outputPanel>
+                    
+                </p:dataViewGridItem>
+                
+            </p:dataView>
+            
+            <p:dialog id="gallery-image-dialog"
+                      widgetVar="galleryImageDialog"
+                      onShow="$('i.ui-galleria-frame:nth-child(1)').removeClass('ui-galleria-frame-active');
+                              $('i.ui-galleria-frame:nth-child(#{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity) + 1})').addClass('ui-galleria-frame-active');
+                              for (let i = 0; i &lt; #{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity)}; i++) { PF('galleryGalleria').next(); }
+                              for (let i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) { $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').click(function(){ selectGalleryImageAt([{name:'selectedGalleryImageIndex', value:i}]); }); }
+                              $('.ui-galleria-nav-prev').click(function(){ selectPreviousGalleryImage(); });
+                              $('.ui-galleria-nav-next').click(function(){ selectNextGalleryImage(); });"
+                      onHide=""
+                      modal="true"
+                      blockScroll="true"
+                      position="center top"
+                      fitViewport="true"
+                      closable="true"
+                      closeOnEscape="true"
+                      resizable="false"
+                      draggable="true"
+                      responsive="true"
+                      dynamic="true"
+                      styleClass="gallery-dialog #{empty thumbnailImageManager.selectedEntity ? 'visibility-hidden' : ''}"
+                      style="">
+                
+                <p:ajax event="close" listener="#{thumbnailImageManager.clearSelection}" />
+                
+                <p:graphicImage id="gallery-image"
+                                value="#{thumbnailImageStreamer.galleryImageStream}"
+                                stream="true"
+                                cache="false"
+                                styleClass="gallery-image"
+                                style="border: 0px solid red;">
+                    <f:param name="galleryImageId" value="#{thumbnailImageManager.selectedEntity.id}" />
+                </p:graphicImage>
+                
+                <div>
+                    <h:outputText value="#{thumbnailImageManager.selectedEntity.remarks}" />
+                </div>
+                
+                <p:galleria id="gallery-galleria"
+                            widgetVar="galleryGalleria"
+                            value="#{thumbnailImageManager.entities}"
+                            var="tim"
+                            autoPlay="false"
+                            showCaption="true">
+                    <p:graphicImage id="thumbnail-image"
+                                    value="#{thumbnailImageStreamer.thumbnailImageStream}"
+                                    stream="true"
+                                    cache="false"
+                                    styleClass=""
+                                    style="">
+                        <f:param name="thumbnailImageId" value="#{tim.id}" />
+                    </p:graphicImage>
+                </p:galleria>
+                
+                <h:outputScript>
+                    $('#gallery-image-dialog').waitForImages(function() {
+                        PF('galleryImageDialog').initPosition();
+                        // remove invisibility after positioning
+                        $('#gallery-image-dialog').removeClass('visibility-hidden');
+                    });
+                </h:outputScript>
+                
+            </p:dialog>
+            
+            <p:remoteCommand name="selectGalleryImageAt"
+                             action="#{thumbnailImageManager.selectEntityAt}"
+                             update="gallery-image"
+                             onstart="PF('statusDialog').show();"
+                             onsuccess=""
+                             oncomplete="$('#gallery-image-dialog').waitForImages(function() { PF('galleryImageDialog').initPosition(); PF('statusDialog').hide(); });" />
+            
+            <p:remoteCommand name="selectPreviousGalleryImage"
+                             action="#{thumbnailImageManager.selectPreviousEntity}"
+                             update="gallery-image"
+                             onstart="PF('statusDialog').show();"
+                             onsuccess="if ( #{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity)} > 0 ) { for (let i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) { $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').removeClass('ui-galleria-frame-active'); $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').css('opacity', ''); } }"
+                             oncomplete="$('#gallery-image-dialog').waitForImages(function() { PF('galleryImageDialog').initPosition(); PF('statusDialog').hide(); });" />
+            
+            <p:remoteCommand name="selectNextGalleryImage"
+                             action="#{thumbnailImageManager.selectNextEntity}"
+                             update="gallery-image"
+                             onstart="PF('statusDialog').show();"
+                             onsuccess="for (let i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) { $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').removeClass('ui-galleria-frame-active'); $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').css('opacity', ''); }"
+                             oncomplete="$('#gallery-image-dialog').waitForImages(function() { PF('galleryImageDialog').initPosition(); PF('statusDialog').hide(); });" />
+            
+        </h:form>
+
+        <p:messages id="msgs" />
+
+    </ui:define>
+
+</ui:composition>

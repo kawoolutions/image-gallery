@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <f:view encoding="UTF-8"
+            locale="en_US">
+        
+        <ui:insert name="metadata" />
+        
+        <h:head>
+            <title>
+                <ui:insert name="title" />
+            </title>
+            
+            <ui:include src="/WEB-INF/templating/resources.xhtml" />
+            <ui:insert name="scripts" />
+        </h:head>
+        
+        <h:body>
+    
+            <div class="max-content-width ml-auto mr-auto pt-15px pb-15px">
+    
+                <ui:insert name="content" />
+            
+            </div>
+                
+            <ui:include src="/WEB-INF/templating/statusDialog.xhtml" />
+            
+        </h:body>
+        
+    </f:view>
+
+</html>

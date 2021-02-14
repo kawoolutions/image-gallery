@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+/********************************* debug styles *******************************/
+
+#status-dialog {
+    z-index: 50000 !important;
+}
+
+.max-content-width {
+    max-width: 1280px;
+}
+
+.gallery-image-dialog {
+    max-width: 80% !important;
+    max-height: auto !important;
+}
+
+.gallery-image {
+    max-width: 100% !important;
+    max-height: 75vh !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.gallery-galleria {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.ui-galleria-filmstrip-fake {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    width: 5000px;
+    z-index: 900;
+    position: absolute;
+    top: 0;
+}
+
+.ui-galleria-frame-fake {
+    float: left;
+    margin-right: 5px;
+    border: 1px solid lime;
+}

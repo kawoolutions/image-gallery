@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>io.kawoolutions</groupId>
+    <artifactId>image-gallery</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>Image Gallery</name>
+
+    <properties>
+        <java.version>1.8</java.version>
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+
+        <repository>
+            <id>jboss-repo</id>
+            <name>JBoss Maven Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </repository>
+
+        <repository>
+            <id>prime-repo</id>
+            <name>PrimeFaces Maven Repository</name>
+            <url>http://repository.primefaces.org</url>
+            <layout>default</layout>
+        </repository>
+        
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        
+        <!--repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository-->
+        
+    </repositories>
+
+    <build>
+        
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+        
+        <outputDirectory>${basedir}/target/WEB-INF/classes</outputDirectory>
+        
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        
+        <pluginManagement>
+            
+            <plugins>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>               
+                
+                <plugin>
+                    <groupId>org.zeroturnaround</groupId>
+                    <artifactId>jrebel-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>generate-rebel-xml</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                
+            </plugins>
+        </pluginManagement>
+        
+    </build>
+
+    <dependencies>
+        
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>7.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.8.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-logger</artifactId>
+            <version>1.0.0-CR2</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
