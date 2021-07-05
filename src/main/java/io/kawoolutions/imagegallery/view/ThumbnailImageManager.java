@@ -42,6 +42,14 @@ public class ThumbnailImageManager extends BaseSelectionHandler<ThumbnailImage>
         try
         {
             entities = thumbnailImageService.findAll();
+            
+//            entities.remove( 0 );
+//            entities.remove( 0 );
+//            entities.remove( 0 );
+//            entities.remove( 0 );
+//            entities.remove( 0 );
+//            entities.remove( 0 );
+//            entities.remove( 0 );
         }
         catch ( Exception e )
         {
@@ -67,8 +75,8 @@ public class ThumbnailImageManager extends BaseSelectionHandler<ThumbnailImage>
     {
         Map<String, String> requestParamMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
-        String indexStr = requestParamMap.get("selectedGalleryImageIndex");
-//        System.out.println("Selecting nth: " + indexStr);
+        String indexStr = requestParamMap.get("selectedFullsizeImageIndex");
+        System.out.println("Selecting nth: " + indexStr);
         
         Galleria g = null;
         
@@ -92,5 +100,35 @@ public class ThumbnailImageManager extends BaseSelectionHandler<ThumbnailImage>
         int selectedIndex = entities.indexOf(getSelectedEntity());
         int nextIndex = selectedIndex == entities.size() - 1 ? 0 : selectedIndex + 1;
         setSelectedEntity(entities.get(nextIndex));
+    }
+    
+    public int getFilmstripLeft()
+    {
+        final int frameIndex = entities.indexOf( getSelectedEntity() );
+        final int frameMiddle = frameIndex * 65 + 32;
+        
+        final int filmstripWidth = getFilmstripWidth();
+        final int containerWidth = 500;
+        
+        // #{500 > bean.entities.size() * 65 ? (500 - bean.entities.size() * 65) / 2 : -(bean.entities.indexOf(bean.selectedEntity) * 65 + 32 - 250)}
+        if ( containerWidth > filmstripWidth )
+        {
+            // filmstrip fits into container: (cw - fw) / 2
+            System.out.println("Container (" + containerWidth + "px) wider than filmstrip (" + filmstripWidth + "px)!");
+            
+            return ( containerWidth - filmstripWidth ) / 2;
+        }
+        
+        // filmstrip wider than container: find nth frame and center on its middle
+        int left = - ( frameMiddle - containerWidth / 2 );
+
+        System.out.println("Filmstrip (" + filmstripWidth + "px) wider than Container (" + containerWidth + "px)! frameIndex = " + frameIndex + ", frameMiddle = " + frameMiddle + ", containerWidth = " + containerWidth + ", left: " + left + "px;");
+
+        return left;
+    }
+    
+    public int getFilmstripWidth()
+    {
+        return entities.size() * 65;
     }
 }

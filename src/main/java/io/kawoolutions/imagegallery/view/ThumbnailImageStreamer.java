@@ -13,9 +13,9 @@ import javax.inject.Named;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import io.kawoolutions.imagegallery.entity.GalleryImage;
+import io.kawoolutions.imagegallery.entity.FullsizeImage;
 import io.kawoolutions.imagegallery.entity.ThumbnailImage;
-import io.kawoolutions.imagegallery.service.GalleryImageService;
+import io.kawoolutions.imagegallery.service.FullsizeImageService;
 
 @Named
 @RequestScoped
@@ -27,12 +27,12 @@ public class ThumbnailImageStreamer implements Serializable
     private ThumbnailImageManager thumbnailImageManager;
     
     @Inject
-    private GalleryImageService galleryImageService;
+    private FullsizeImageService galleryImageService;
     
     @PostConstruct
     public void construct()
     {
-        System.out.println(ThumbnailImageStreamer.class.getSimpleName() + ": @PostConstruct!");
+//        System.out.println(ThumbnailImageStreamer.class.getSimpleName() + ": @PostConstruct!");
     }
 
     public StreamedContent getThumbnailImageStream()
@@ -50,17 +50,25 @@ public class ThumbnailImageStreamer implements Serializable
         }
 
         Integer id = Integer.valueOf(context.getExternalContext().getRequestParameterMap().get( "thumbnailImageId" ));
+        
+//        System.out.println("TIM ID = " + id);
+        
         ThumbnailImage tim = thumbnailImageManager.getCachedEntitiesMap().get( id );
         
-        System.out.println("Returning streamed content: bytes = " + tim.getData().length);
+        if ( tim == null )
+        {
+            return new DefaultStreamedContent();
+        }
+        
+//        System.out.println("Returning thumbnail image streamed content: bytes = " + tim.getData().length);
         
         // So, browser is requesting the image. Get ID value from actual request param.
         return new DefaultStreamedContent(new ByteArrayInputStream(tim.getData()), tim.getMimeType());
     }
 
-    public StreamedContent getGalleryImageStream()
+    public StreamedContent getFullsizeImageStream()
     {
-        System.out.println(ThumbnailImageStreamer.class.getSimpleName() + ": getGalleryImageStream()!");
+//        System.out.println(ThumbnailImageStreamer.class.getSimpleName() + ": getFullsizeImageStream()!");
 
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -73,9 +81,9 @@ public class ThumbnailImageStreamer implements Serializable
         }
 
         Integer id = Integer.valueOf(context.getExternalContext().getRequestParameterMap().get( "galleryImageId" ));
-        GalleryImage gim = galleryImageService.findByPk( id );
+        FullsizeImage gim = galleryImageService.findByPk( id );
         
-        System.out.println("Returning streamed content: bytes = " + gim.getData().length);
+//        System.out.println("Returning gallery image streamed content: bytes = " + gim.getData().length);
 
         // So, browser is requesting the image. Get ID value from actual request param.
         return new DefaultStreamedContent(new ByteArrayInputStream(gim.getData()), gim.getMimeType());

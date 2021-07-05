@@ -38,11 +38,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `imagegallery`.`GalleryImages`
+-- Table `imagegallery`.`FullsizeImages`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `imagegallery`.`GalleryImages` ;
+DROP TABLE IF EXISTS `imagegallery`.`FullsizeImages` ;
 
-CREATE TABLE IF NOT EXISTS `imagegallery`.`GalleryImages` (
+CREATE TABLE IF NOT EXISTS `imagegallery`.`FullsizeImages` (
   `id` INT NOT NULL,
   `file_name` VARCHAR(50) NOT NULL,
   `file_type` VARCHAR(5) NOT NULL,
@@ -86,22 +86,22 @@ COMMIT;
 
 
 -- -----------------------------------------------------
--- Data for table `imagegallery`.`GalleryImages`
+-- Data for table `imagegallery`.`FullsizeImages`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `imagegallery`;
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (1, 'bake-3480x2160.jpg', 'jpg', 'image/jpeg', '0x', 3480, 2160, 'Bake Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (2, 'building-16965x8230.jpg', 'jpg', 'image/jpeg', '0x', 16965, 8230, 'Standford Church Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (3, 'desktop-3840x1600.png', 'png', 'image/png', '0x', 3840, 1600, 'Desktop Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (4, 'espana-3264x2448.jpg', 'jpg', 'image/jpeg', '0x', 3264, 2448, 'Casa de Espana Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (5, 'fähre-2592x1936.jpg', 'jpg', 'image/jpeg', '0x', 2592, 1936, 'Fähre Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (6, 'kfschiff-1600x900.jpg', 'jpg', 'image/jpeg', '0x', 1600, 900, 'Kreuzfahrtschiff Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (7, 'landscape-12000x6000.jpg', 'jpg', 'image/jpeg', '0x', 12000, 6000, 'Landschaft Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (8, 'mario-2192x2920.png', 'png', 'image/png', '0x', 2192, 2920, 'Super Mario Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (9, 'mein-schiff-5971x3970.jpg', 'jpg', 'image/jpeg', '0x', 5971, 3970, 'Mein Schiff Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (10, 'passagierschiff-318x159.jpg', 'jpg', 'image/jpeg', '0x', 318, 159, 'Passagierschiff Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (11, 'tacho-3024x4032.jpg', 'jpg', 'image/jpeg', '0x', 3024, 4032, 'Tacho Thumbnail');
-INSERT INTO `imagegallery`.`GalleryImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (12, 'tanker-2560x1600.jpg', 'jpg', 'image/jpeg', '0x', 2560, 1600, 'Tanker Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (1, 'bake-3480x2160.jpg', 'jpg', 'image/jpeg', '0x', 3480, 2160, 'Bake Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (2, 'building-16965x8230.jpg', 'jpg', 'image/jpeg', '0x', 16965, 8230, 'Standford Church Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (3, 'desktop-3840x1600.png', 'png', 'image/png', '0x', 3840, 1600, 'Desktop Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (4, 'espana-3264x2448.jpg', 'jpg', 'image/jpeg', '0x', 3264, 2448, 'Casa de Espana Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (5, 'fähre-2592x1936.jpg', 'jpg', 'image/jpeg', '0x', 2592, 1936, 'Fähre Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (6, 'kfschiff-1600x900.jpg', 'jpg', 'image/jpeg', '0x', 1600, 900, 'Kreuzfahrtschiff Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (7, 'landscape-12000x6000.jpg', 'jpg', 'image/jpeg', '0x', 12000, 6000, 'Landschaft Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (8, 'mario-2192x2920.png', 'png', 'image/png', '0x', 2192, 2920, 'Super Mario Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (9, 'mein-schiff-5971x3970.jpg', 'jpg', 'image/jpeg', '0x', 5971, 3970, 'Mein Schiff Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (10, 'passagierschiff-318x159.jpg', 'jpg', 'image/jpeg', '0x', 318, 159, 'Passagierschiff Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (11, 'tacho-3024x4032.jpg', 'jpg', 'image/jpeg', '0x', 3024, 4032, 'Tacho Thumbnail');
+INSERT INTO `imagegallery`.`FullsizeImages` (`id`, `file_name`, `file_type`, `mime_type`, `data`, `width`, `height`, `alternative_text`) VALUES (12, 'tanker-2560x1600.jpg', 'jpg', 'image/jpeg', '0x', 2560, 1600, 'Tanker Thumbnail');
 
 COMMIT;
 

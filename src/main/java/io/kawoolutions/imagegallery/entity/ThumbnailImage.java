@@ -6,11 +6,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -18,16 +16,11 @@ import io.kawoolutions.imagegallery.framework.entity.BaseIdEntity;
 
 @Entity
 @Table(name = "\"ThumbnailImages\"")
-@NamedQuery(name = ThumbnailImage.FIND_ALL, query = "SELECT ti FROM ThumbnailImage ti")
 public class ThumbnailImage extends BaseIdEntity
 {
     private static final long serialVersionUID = 1L;
-    
-    public static final String FIND_ALL = "ThumbnailImage.findAll";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(insertable = false, updatable = false)
     private Integer id;
 
     @Basic(optional = false)
@@ -42,7 +35,7 @@ public class ThumbnailImage extends BaseIdEntity
     @Column(name = "mime_type")
     private String mimeType;
 
-    @Basic(optional = false)
+    @Basic(optional = false, fetch = FetchType.LAZY)
     @Column
     @Lob
     private byte[] data;
@@ -60,26 +53,40 @@ public class ThumbnailImage extends BaseIdEntity
     private String alternativeText;
 
     @Basic
-    @Column
-    private String remarks;
+    @Column(name = "remarks_preview")
+    private String remarksPreview;
 
-    @OneToOne(mappedBy = "thumbnailImage", optional = false, fetch = FetchType.LAZY)
-    private GalleryImage galleryImage;
+    @Id
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private FullsizeImage fullsizeImage;
 
     public ThumbnailImage()
     {
     }
 
     @Override
+    public Integer getPk()
+    {
+        return fullsizeImage.getPk();
+    }
+
+    @Override
+    public void setPk(Integer pk)
+    {
+        fullsizeImage.setPk(pk);
+    }
+
+    @Override
     public Integer getId()
     {
-        return id;
+        return fullsizeImage.getId();
     }
 
     @Override
     public void setId(Integer id)
     {
-        this.id = id;
+        fullsizeImage.setId(id);
     }
 
     public String getFileName()
@@ -141,13 +148,6 @@ public class ThumbnailImage extends BaseIdEntity
     {
         this.height = height;
     }
-    
-    public double getAspectRatio()
-    {
-        double aspectRatio = (double) width / height;
-        
-        return aspectRatio;
-    }
 
     public String getAlternativeText()
     {
@@ -159,24 +159,24 @@ public class ThumbnailImage extends BaseIdEntity
         this.alternativeText = alternativeText;
     }
 
-    public String getRemarks()
+    public String getRemarksPreview()
     {
-        return remarks;
+        return remarksPreview;
     }
 
-    public void setRemarks(String remarks)
+    public void setRemarksPreview(String remarksPreview)
     {
-        this.remarks = remarks;
+        this.remarksPreview = remarksPreview;
     }
 
-    public GalleryImage getGalleryImage()
+    public FullsizeImage getFullsizeImage()
     {
-        return galleryImage;
+        return fullsizeImage;
     }
 
-    public void setGalleryImage(GalleryImage galleryImage)
+    public void setFullsizeImage(FullsizeImage fullsizeImage)
     {
-        this.galleryImage = galleryImage;
+        this.fullsizeImage = fullsizeImage;
     }
 
     @Override
@@ -194,18 +194,18 @@ public class ThumbnailImage extends BaseIdEntity
 
         ThumbnailImage other = ( ThumbnailImage ) obj;
 
-        return Objects.equals(this.id, other.id);
+        return Objects.equals(this.fullsizeImage, other.fullsizeImage);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(this.id);
+        return Objects.hash(this.fullsizeImage);
     }
 
     @Override
     public String toString()
     {
-        return "ThumbnailImage [id=" + Objects.toString(this.id) + ", fileName=" + this.fileName + ", fileType=" + this.fileType + ", mimeType=" + this.mimeType + ", width=" + Objects.toString(this.width) + ", height=" + Objects.toString(this.height) + ", alternativeText=" + this.alternativeText + ", remarks=" + this.remarks + "]";
+        return "ThumbnailImage [id=" + Objects.toString(this.id) + ", fileName=" + this.fileName + ", fileType=" + this.fileType + ", mimeType=" + this.mimeType + ", width=" + Objects.toString(this.width) + ", height=" + Objects.toString(this.height) + ", alternativeText=" + this.alternativeText + ", remarksPreview=" + this.remarksPreview + "]";
     }
 }

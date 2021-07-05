@@ -5,12 +5,9 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
     
-    <!-- automatic execution of status dialog -->
-    <!--p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" /-->
-
     <p:dialog id="status-dialog"
               widgetVar="statusDialog"
-              modal="false"
+              modal="true"
               draggable="false"
               closable="false"
               resizable="false"
@@ -21,7 +18,6 @@
         </p>
         
         <h:graphicImage library="global-mixins" name="images/ajaxloadingbar.gif" />
-        <!--i class="pi pi-spinner loading-icon" aria-hidden="true"></i-->
     
     </p:dialog>
 

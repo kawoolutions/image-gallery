@@ -30,23 +30,25 @@
                         paginatorAlwaysVisible="false">
 
                 <p:dataViewGridItem>
+                    
                     <p:commandLink id="thumbnail-image-link"
                                    widgetVar="thumbnailLink"
-                                  ction="#{thumbnailImageManager.loadGalleryImage}"
                                    process="@this"
                                    update="gallery-image-dialog msgs"
                                    onstart="PF('statusDialog').show();"
-                                   oncomplete="if (#{empty tim.id}) {return false;} PF('galleryImageDialog').initSize(); PF('galleryImageDialog').initPosition(); PF('galleryImageDialog').show(); PF('statusDialog').hide();"
+                                  blabla="PF('galleryImageDialog').initSize(); PF('galleryImageDialog').initPosition();"
+                                   oncomplete="PF('galleryImageDialog').initSize(); PF('galleryImageDialog').initPosition(); PF('galleryImageDialog').show();"
+                                   disabled="#{empty tim.id}"
                                    styleClass="display-inline-block full-width">
                         
                         <f:setPropertyActionListener target="#{thumbnailImageManager.selectedEntity}" value="#{tim}" />
                         
                         ID: #{tim.id}<br />
-                        CLASS: #{tim.class.simpleName}<br />
+                        <!--CLASS: #{tim.class.simpleName}<br /-->
                         FILE: #{tim.fileName}<br />
-                        DATA SIZE: #{fn:length(tim.data)}<br />
-                        NOT EMP AID?: #{not empty tim.id}<br />
-                        FACTOR: #{tim.aspectRatio}<br />
+                        TIM SIZE: #{fn:length(tim.data)}<br />
+                        <!--NOT EMP AID?: #{not empty tim.id}<br />
+                        FACTOR: #{tim.aspectRatio}<br /-->
                         <p:graphicImage id="thumbnail-image"
                                         value="#{thumbnailImageStreamer.thumbnailImageStream}"
                                         alt="#{tim.alternativeText}"
@@ -75,12 +77,7 @@
             
             <p:dialog id="gallery-image-dialog"
                       widgetVar="galleryImageDialog"
-                      onShow="$('i.ui-galleria-frame:nth-child(1)').removeClass('ui-galleria-frame-active');
-                              $('i.ui-galleria-frame:nth-child(#{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity) + 1})').addClass('ui-galleria-frame-active');
-                              for (let i = 0; i &lt; #{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity)}; i++) { PF('galleryGalleria').next(); }
-                              for (let i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) { $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').click(function(){ selectGalleryImageAt([{name:'selectedGalleryImageIndex', value:i}]); }); }
-                              $('.ui-galleria-nav-prev').click(function(){ selectPreviousGalleryImage(); });
-                              $('.ui-galleria-nav-next').click(function(){ selectNextGalleryImage(); });"
+                      onShow="waitForDialogImagesThenHideStatusDialog();"
                       onHide=""
                       modal="true"
                       blockScroll="true"
@@ -91,7 +88,7 @@
                       resizable="false"
                       draggable="true"
                       responsive="true"
-                      dynamic="true"
+                      dynamic="false"
                       styleClass="gallery-dialog #{empty thumbnailImageManager.selectedEntity ? 'visibility-hidden' : ''}"
                       style="">
                 
@@ -101,61 +98,196 @@
                                 value="#{thumbnailImageStreamer.galleryImageStream}"
                                 stream="true"
                                 cache="false"
-                                styleClass="gallery-image"
-                                style="border: 0px solid red;">
+                                rendered="#{thumbnailImageManager.isSelected()}"
+                                styleClass="gallery-image display-block ml-auto mr-auto border-re">
                     <f:param name="galleryImageId" value="#{thumbnailImageManager.selectedEntity.id}" />
                 </p:graphicImage>
                 
-                <div>
+                <!--p:graphicImage id="gallery-image-2"
+                                value="#{thumbnailImageStreamer.galleryImageStream}"
+                                stream="true"
+                                cache="false"
+                                rendered="#{thumbnailImageManager.isSelected()}"
+                                styleClass="gallery-image display-block">
+                    <f:param name="galleryImageId" value="#{thumbnailImageManager.selectedEntity.id}" />
+                </p:graphicImage>
+                
+                <p:graphicImage id="gallery-image-3"
+                                value="#{thumbnailImageStreamer.galleryImageStream}"
+                                stream="true"
+                                cache="false"
+                                rendered="#{thumbnailImageManager.isSelected()}"
+                                styleClass="gallery-image display-block">
+                    <f:param name="galleryImageId" value="#{thumbnailImageManager.selectedEntity.id}" />
+                </p:graphicImage>
+                
+                <p:graphicImage id="gallery-image-4"
+                                value="#{thumbnailImageStreamer.galleryImageStream}"
+                                stream="true"
+                                cache="false"
+                                rendered="#{thumbnailImageManager.isSelected()}"
+                                styleClass="gallery-image display-block">
+                    <f:param name="galleryImageId" value="#{thumbnailImageManager.selectedEntity.id}" />
+                </p:graphicImage-->
+                
+                <h:panelGroup id="gallery-remarks"
+                              layout="block"
+                              rendered="#{thumbnailImageManager.isSelected()}"
+                              styleClass="text-center">
                     <h:outputText value="#{thumbnailImageManager.selectedEntity.remarks}" />
-                </div>
+                </h:panelGroup>
                 
-                <p:galleria id="gallery-galleria"
-                            widgetVar="galleryGalleria"
-                            value="#{thumbnailImageManager.entities}"
-                            var="tim"
-                            autoPlay="false"
-                            showCaption="true">
-                    <p:graphicImage id="thumbnail-image"
-                                    value="#{thumbnailImageStreamer.thumbnailImageStream}"
-                                    stream="true"
-                                    cache="false"
-                                    styleClass=""
-                                    style="">
-                        <f:param name="thumbnailImageId" value="#{tim.id}" />
-                    </p:graphicImage>
-                </p:galleria>
+                <h:panelGroup id="gallery-galleria"
+                              widgetVar="galleryGalleria"
+                              layout="block"
+                              rendered="#{thumbnailImageManager.isSelected()}"
+                              styleClass="ui-galleria ui-widget ui-widget-content ui-corner-all gallery-galleria"
+                              style="">
+                    <!--LEFT: #{thumbnailImageManager.filmstripLeft} vs. #{500 > thumbnailImageManager.entities.size() * 65 ? (500 - thumbnailImageManager.entities.size() * 65) / 2 : -(thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity) * 65 + 32 - 250)}-->
+                    <div class="ui-galleria-filmstrip-wrapper"
+                         style="width: 500px; height: 40px;">
+                         <ul class="ui-galleria-filmstrip"
+                             style="left: #{500 > thumbnailImageManager.entities.size() * 65 ? (500 - thumbnailImageManager.entities.size() * 65) / 2 : -(thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity) * 65 + 32 - 250)}px;">
+                            <ui:repeat value="#{thumbnailImageManager.entities}"
+                                       var="tim">
+                                <li class="ui-galleria-frame #{thumbnailImageManager.selectedEntity eq tim ? 'ui-galleria-frame-active' : ''}">
+                                    <div class="ui-galleria-frame-content">
+                                        <p:commandLink id="frame-button"
+                                                       update="@this gallery-image gallery-remarks gallery-galleria gallery-functions"
+                                                       onstart="PF('statusDialog').show();"
+                                                       oncomplete="waitForDialogImagesAndCall(function() { initDialogPosition(); PF('statusDialog').hide(); });"
+                                                       styleClass="#{thumbnailImageManager.entities.indexOf(tim)}">
+                                            <f:setPropertyActionListener target="#{thumbnailImageManager.selectedEntity}" value="#{tim}" />
+                                            <p:graphicImage id="thumbnail-image"
+                                                            value="#{thumbnailImageStreamer.thumbnailImageStream}"
+                                                            stream="true"
+                                                            cache="false"
+                                                            width="60"
+                                                            height="40"
+                                                            styleClass=""
+                                                            style="">
+                                                <f:param name="thumbnailImageId" value="#{tim.id}" />
+                                            </p:graphicImage>
+                                        </p:commandLink>
+                                    </div>
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                    </div>
+        
+                    <!--p:ajaxStatus oncomplete="clearFilmstripHighlightsAndSetTo(#{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity) + 1});" /-->
                 
-                <h:outputScript>
-                    $('#gallery-image-dialog').waitForImages(function() {
+                </h:panelGroup>
+        
+                <!--p:ajaxStatus oncomplete="addOnClick('gallery-image-dialog_modal', function() { PF('galleryImageDialog').hide(); scrollToFilmstripHighlight(); })" /-->
+        
+                <!--h:outputScript library="image-gallery" name="scripts/jquery.waitforimages.min.js" /-->
+                <h:outputScript id="gallery-functions">
+                    
+                    // waiting functions
+                    
+                    function waitForDialogImages() {
+                        waitForDialogImagesAndCall(function() {});
+                    }
+            
+                    function waitForDialogImagesAndInitPosition() {
+                        waitForDialogImagesAndCall(function() { initDialogPosition(); });
+                    }
+                    
+                    function waitForDialogImagesThenHideStatusDialog() {
+                        waitForDialogImagesAndCall(function() { initDialogPosition(); PF('statusDialog').hide(); console.log("Finished waiting for images!") });
+                    }
+                    
+                    // jQuery plugin waitForImages: see https://github.com/alexanderdickson/waitForImages
+                    function waitForDialogImagesAndCall(callback) {
+                        console.log("waitForDialogImagesAndCall()!");
+                        $('gallery-image-dialog').waitForImages(callback);
+                    }
+                    
+                    // dialog functions
+                    
+                    function initDialogPosition() {
+                        console.log("Init dialog position!");
                         PF('galleryImageDialog').initPosition();
-                        // remove invisibility after positioning
-                        $('#gallery-image-dialog').removeClass('visibility-hidden');
-                    });
+                    }
+                    
+                    function removeDialogInvisibility() {
+                        $('gallery-image-dialog').removeClass('visibility-hidden');
+                    }
+        
+                    // filmstrip functions
+                    
+                    /*function clearFilmstripHighlightsAndSetTo(nth) {
+                        clearFilmstripHighlights();
+                        setFilmstripHighlightAt(nth);
+                    }
+                    
+                    function clearFilmstripHighlights() {
+                        for (var i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) {
+                            clearFilmstripHighlightAt(i + 1); // nth-child starts at 1, so i + 1
+                        }
+                    }
+                    
+                    function clearFilmstripHighlightAt(nth) {
+                        $('li.ui-galleria-frame:nth-child(' + nth + ')').removeClass('ui-galleria-frame-active');
+                        $('li.ui-galleria-frame:nth-child(' + nth + ')').css('opacity', ''); // sometimes an inline style "opacity: 1;" is hanging around: remove as well
+                    }
+                    
+                    function setFilmstripHighlightAt(nth) {
+                        console.log("setFilmstripHighlightAt(" + nth + ")!");
+                        $('li.ui-galleria-frame:nth-child(' + nth + ')').addClass('ui-galleria-frame-active');
+                        $('li.ui-galleria-frame:nth-child(' + nth + ')').css('opacity', '1'); // re-add opacity
+                    }*/
+                    
+                    /*function callNextUpToSelectedFilmstripHighlight() {
+                        for (var i = 0; i &lt; #{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity)}; i++) {
+                            //PF('galleryGalleria').next();
+                            // clean up after next()'ing?
+                            // $('li.ui-galleria-frame:nth-child(' + (i) + ')').removeClass('ui-galleria-frame-active');
+                            // $('li.ui-galleria-frame:nth-child(' + (i) + ')').css('opacity', '');
+                        }       
+                    }*/
+                    
+                    /*function registerFilmstripClickCallbacks() {
+                        for (let i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) {
+                            $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').click(function(){ selectFullsizeImageAt([{name: 'clickedFullsizeImageIndex', value: i}]); });
+                        }
+                        // 
+                        $('.ui-galleria-nav-prev').click(function(){ selectPreviousFullsizeImage(); });
+                        $('.ui-galleria-nav-next').click(function(){ selectNextFullsizeImage(); });
+                    }
+                    
+                    function scrollToFilmstripHighlight() {
+                        //$('.ui-galleria-filmstrip').animate({scrollLeft: $('.ui-galleria-frame-active').position().left}, 500);
+                        var count = #{thumbnailImageManager.entities.size()};
+                        var index = #{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity)};
+                        var left = index * 65;
+                        var style = '-' + left + 'px !important;';
+                        console.log("Scrolling filmstrip to highlight! 'left: " + style + "'");
+                        $('.ui-galleria-filmstrip').css('left', style);
+                    }*/
+                    
                 </h:outputScript>
                 
             </p:dialog>
             
-            <p:remoteCommand name="selectGalleryImageAt"
+            <!--p:remoteCommand name="selectFullsizeImageAt"
                              action="#{thumbnailImageManager.selectEntityAt}"
-                             update="gallery-image"
+                             update="gallery-image gallery-remarks gallery-galleria gallery-functions"
                              onstart="PF('statusDialog').show();"
-                             onsuccess=""
-                             oncomplete="$('#gallery-image-dialog').waitForImages(function() { PF('galleryImageDialog').initPosition(); PF('statusDialog').hide(); });" />
+                             oncomplete="registerFilmstripClickCallbacks(); waitForDialogImagesAndCall(function() { initDialogPosition(); PF('statusDialog').hide(); });" /-->
             
-            <p:remoteCommand name="selectPreviousGalleryImage"
+            <!--p:remoteCommand name="selectPreviousFullsizeImage"
                              action="#{thumbnailImageManager.selectPreviousEntity}"
                              update="gallery-image"
                              onstart="PF('statusDialog').show();"
-                             onsuccess="if ( #{thumbnailImageManager.entities.indexOf(thumbnailImageManager.selectedEntity)} > 0 ) { for (let i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) { $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').removeClass('ui-galleria-frame-active'); $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').css('opacity', ''); } }"
-                             oncomplete="$('#gallery-image-dialog').waitForImages(function() { PF('galleryImageDialog').initPosition(); PF('statusDialog').hide(); });" />
+                             oncomplete="registerFilmstripClickCallbacks(); waitForDialogImagesAndCall(function() { initDialogPosition(); PF('statusDialog').hide(); });" />
             
-            <p:remoteCommand name="selectNextGalleryImage"
+            <p:remoteCommand name="selectNextFullsizeImage"
                              action="#{thumbnailImageManager.selectNextEntity}"
                              update="gallery-image"
                              onstart="PF('statusDialog').show();"
-                             onsuccess="for (let i = 0; i &lt; #{thumbnailImageManager.entities.size()}; i++) { $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').removeClass('ui-galleria-frame-active'); $('li.ui-galleria-frame:nth-child(' + (i + 1) + ')').css('opacity', ''); }"
-                             oncomplete="$('#gallery-image-dialog').waitForImages(function() { PF('galleryImageDialog').initPosition(); PF('statusDialog').hide(); });" />
+                             oncomplete="registerFilmstripClickCallbacks(); waitForDialogImagesAndCall(function() { initDialogPosition(); PF('statusDialog').hide(); });" /-->
             
         </h:form>
 
